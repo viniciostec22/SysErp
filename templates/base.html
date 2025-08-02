@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}ERP System{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  <script src="{% static 'js/theme-toggle.js' %}" defer></script>
+</head>
+<body>
+  <!-- Botão de alternância de tema flutuante (visível em mobile) -->
+  <div class="theme-toggle-floating" onclick="document.getElementById('toggle-theme').click()">🌓</div>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo">🏢 ERP System</div>
+      <div class="nav-items">
+        {% if user.is_authenticated %}
+        <span class="company-name">ERP Company</span>
+
+        <div class="user-dropdown">
+          <button class="user-avatar-btn" id="user-menu-btn">
+            <span>{{ user.first_name|first|upper }}</span>
+          </button>
+
+          <div class="dropdown-menu" id="user-menu">
+            <span class="dropdown-user-name">{{ user.get_full_name }}</span>
+            <hr />
+            <a href="#" class="dropdown-item">
+              <i class="fa-solid fa-user-circle"></i>
+              Meu Perfil
+            </a>
+            <a href="{% url 'logout' %}" class="dropdown-item">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              Sair
+            </a>
+          </div>
+        </div>
+        <button id="toggle-theme" class="theme-toggle">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    {% if user.is_authenticated %}
+     <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <ul class="sidebar-menu">
+          <li><a href="#"><i class="fa-solid fa-house"></i><span class="label">Dashboard</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-users"></i><span class="label">Funcionários</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-box"></i><span class="label">Produtos</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-tags"></i><span class="label">Marcas</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-truck"></i><span class="label">Fornecedores</span></a></li>
+          <li><a href="#"><i class="fa-solid fa-arrow-right-arrow-left"></i><span class="label">Movimentações</span></a></li>
+        </ul>
+      </aside>
+
+    {% endif %}
+
+    <main class="main-content">
+      {% block content %}
+      <h2>Bem-vindo, {{ user.first_name }}!</h2>
+      <p>Este será o painel principal onde você visualizará os dados importantes do ERP.</p>
+      {% endblock %}
+    </main>
+  </div>
+  <footer>
+        <p>&copy; 2025 ERP Company</p>
+      </footer>
+</body>
+</html>

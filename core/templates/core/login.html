@@ -1,0 +1,72 @@
+{% load static %}
+{% comment %} <!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ERP System</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{% static 'js/theme-toggle.js' %}" defer></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-icon">
+                <i class="fa-solid fa-building-columns fa-2x" style="color: #3b82f6;"></i>
+            </div>
+            <h2>ERP System</h2>
+            <p class="auth-subtitle">Entre com suas credenciais para acessar o sistema</p>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <label for="id_username">E-mail</label>
+                <input type="email" name="username" id="id_username" required>
+
+                <label for="id_password">Senha</label>
+                <input type="password" name="password" id="id_password" required>
+
+                <button type="submit">Entrar</button>
+            </form>
+            <div class="auth-links">
+                <a href="#">Esqueci minha senha</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERP Login</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
+  <div class="container">
+    <div class="card">
+      <div class="icon">🏢</div>
+      <h1>ERP System</h1>
+      <p>Entre com suas credenciais para acessar o sistema</p>
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        <label for="email">E-mail</label>
+        <input type="email" id="email", name="username" placeholder="seu@email.com" required />
+
+        <label for="password">Senha</label>
+        <div class="password-wrapper">
+          <input type="password" name="password" id="password" placeholder="••••••" required />
+          <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <button type="submit">Entrar</button>
+        <a href="#" class="forgot">Esqueci minha senha</a>
+      </form>
+    </div>
+  </div>
+  <script src="{% static 'js/login.js' %}" defer></script>
+</body>
+</html>
