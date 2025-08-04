@@ -1,78 +1,131 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="pt-br" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}ERP System{% endblock %}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-  <script src="{% static 'js/theme-toggle.js' %}" defer></script>
-</head>
-<body>
-  <!-- Botão de alternância de tema flutuante (visível em mobile) -->
-  <div class="theme-toggle-floating" onclick="document.getElementById('toggle-theme').click()">🌓</div>
+<html lang="pt-br" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}ERP System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'dist/output.css' %}">
+    <!-- Certifique-se de que esta linha está correta e funcionando -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- OU use o CDN genérico para teste se não tiver seu kit: -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2j+FXlyPzQGqN5aG6b/B/J5w+E4g/n5g6w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 
-  <header>
-    <nav class="navbar">
-      <div class="logo">🏢 ERP System</div>
-      <div class="nav-items">
+    <script src="{% static 'js/theme-toggle.js' %}" defer></script>
+    <script src="{% static 'js/sidebar.js' %}" defer></script>
+  </head>
+
+  <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+    <header class="bg-white dark:bg-gray-800 shadow-md z-10">
+      <nav class="max-w-full mx-auto flex justify-between items-center px-4 py-3">
+        <div class="flex items-center space-x-2">
+          <!-- Botão para mobile/recolher sidebar -->
+          <button id="sidebar-toggle-mobile" class="md:hidden text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 focus:outline-none text-xl mr-3">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">🏢 ERP System</span>
+        </div>
         {% if user.is_authenticated %}
-        <span class="company-name">ERP Company</span>
-
-        <div class="user-dropdown">
-          <button class="user-avatar-btn" id="user-menu-btn">
-            <span>{{ user.first_name|first|upper }}</span>
+        <div class="flex items-center space-x-4 relative">
+          <!-- Botão de tema -->
+          <button id="toggle-theme" class="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 focus:outline-none text-xl p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <i class="fa-solid fa-moon"></i>
           </button>
 
-          <div class="dropdown-menu" id="user-menu">
-            <span class="dropdown-user-name">{{ user.get_full_name }}</span>
-            <hr />
-            <a href="#" class="dropdown-item">
-              <i class="fa-solid fa-user-circle"></i>
-              Meu Perfil
-            </a>
-            <a href="{% url 'logout' %}" class="dropdown-item">
-              <i class="fa-solid fa-right-from-bracket"></i>
-              Sair
-            </a>
+          <!-- Avatar do Usuário e Dropdown -->
+          <div class="relative">
+            <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+              <div class="w-8 h-8 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                {{ user.first_name|first|upper }}
+              </div>
+              <span class="hidden sm:inline font-semibold">{{ user.get_full_name|default:user.username }}</span>
+              <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-20 hidden">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                <i class="fa-solid fa-user mr-2"></i>Perfil
+              </a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                <i class="fa-solid fa-gear mr-2"></i>Configurações
+              </a>
+              <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+              <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-b-md">
+                  <i class="fa-solid fa-right-from-bracket mr-2"></i>Sair
+                </button>
+              </form>
+            </div>
           </div>
         </div>
-        <button id="toggle-theme" class="theme-toggle">
-          <i class="fa-solid fa-moon"></i>
-        </button>
         {% endif %}
-      </div>
-    </nav>
-  </header>
+      </nav>
+    </header>
 
-  <div class="container">
-    {% if user.is_authenticated %}
-     <aside class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-          <i class="fa-solid fa-bars"></i>
+   <div id="layout" class="flex flex-1 overflow-hidden group transition-all duration-300 ease-in-out">
+  {% if user.is_authenticated %}
+  <!-- Sidebar -->
+  <aside id="sidebar" class="bg-white dark:bg-gray-800 md:w-64 transition-all duration-300 ease-in-out shrink-0 flex flex-col border-r dark:border-gray-700">
+    <div class="flex flex-col h-full py-4 space-y-2 overflow-y-auto">
+      <!-- Botão de recolher/expandir para desktop -->
+      <div class="hidden md:flex justify-end pr-4 mb-2">
+        <button id="sidebar-toggle-desktop" class="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 focus:outline-none text-xl p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+          <i class="fa-solid fa-angles-left"></i>
         </button>
-        <ul class="sidebar-menu">
-          <li><a href="#"><i class="fa-solid fa-house"></i><span class="label">Dashboard</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-users"></i><span class="label">Funcionários</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-box"></i><span class="label">Produtos</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-tags"></i><span class="label">Marcas</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-truck"></i><span class="label">Fornecedores</span></a></li>
-          <li><a href="#"><i class="fa-solid fa-arrow-right-arrow-left"></i><span class="label">Movimentações</span></a></li>
-        </ul>
-      </aside>
+      </div>
 
-    {% endif %}
+      <a href="{% url 'home' %}" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+                <i class="fa-solid fa-house mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Início</span>
+      </a>
 
-    <main class="main-content">
-      {% block content %}
-      <h2>Bem-vindo, {{ user.first_name }}!</h2>
-      <p>Este será o painel principal onde você visualizará os dados importantes do ERP.</p>
-      {% endblock %}
-    </main>
-  </div>
-  <footer>
-        <p>&copy; 2025 ERP Company</p>
-      </footer>
-</body>
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-users mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Clientes</span>
+      </a>
+
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-box mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Produtos</span>
+      </a>
+
+      <a href="{% url 'products:brand_list' %}" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-registered mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Marcas</span>
+      </a>
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-tags mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Categorias</span>
+      </a>
+
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-truck mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Pedidos</span>
+      </a>
+
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-red-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-arrow-right-from-bracket mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Sair</span>
+      </a>
+    </div>
+  </aside>
+  {% endif %}
+
+
+
+      <main class="flex-1 overflow-y-auto p-6">
+        {% block content %}
+        <h2 class="text-3xl font-bold mb-4">Bem-vindo, {{ user.first_name }}!</h2>
+        <p class="text-lg">Este será o painel principal onde você visualizará os dados importantes do ERP.</p>
+        {% endblock %}
+      </main>
+    </div>
+
+    <footer class="bg-white dark:bg-gray-800 text-center py-4 mt-auto text-gray-600 dark:text-gray-400">
+      <p>&copy; 2025 ERP Company</p>
+    </footer>
+
+  </body>
 </html>

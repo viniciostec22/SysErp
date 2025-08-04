@@ -38,14 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+
     'core',
     'products',
     'stock',
 ]
 
+
+# URL para onde o usuário será redirecionado após fazer login
 LOGIN_URL = '/login/'
 
+# URL para onde o usuário será redirecionado após fazer logout
+LOGOUT_REDIRECT_URL = '/login/'
+
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -120,13 +127,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'templates', 'static'),
+# ]
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'templates', 'static'),
-]
 
-print("BASE_DIR:", BASE_DIR)
-print("STATICFILES_DIRS is:", STATICFILES_DIRS)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -134,3 +143,15 @@ print("STATICFILES_DIRS is:", STATICFILES_DIRS)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+
+
+# Configurações de E-mail para Desenvolvimento (imprime e-mails no console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Se você quiser usar um servidor SMTP real (para produção, por exemplo):
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.seuservidor.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'seu_email@dominio.com'
+# EMAIL_HOST_PASSWORD = 'sua_senha_de_email'

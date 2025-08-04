@@ -1,1 +1,15 @@
 {% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-4">Bem-vindo, {{ user.first_name }}!</h2>
+        <p class="text-lg">Este será o painel principal onde você visualizará os dados importantes do ERP.</p>
+    {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="p-3 rounded bg-green-500 text-white">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock content %}
