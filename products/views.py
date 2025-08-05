@@ -67,12 +67,24 @@ class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
         return reverse_lazy('products:brand_list')
 
     
-
 class BrandUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Brand
     template_name = 'products/brand_form.html'
     form_class = forms.BrandForm
     success_url = reverse_lazy('products:brand_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
+        if self.request.GET.get('popup'):
+            return HttpResponse(
+                '<script>window.opener.location.reload(); window.close();</script>'
+            )
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('products:brand_list')
 
 class BrandDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Brand
