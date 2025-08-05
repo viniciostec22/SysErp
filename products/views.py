@@ -157,3 +157,11 @@ class CategoryDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Category
     template_name = 'products/category_confirm_delete.html'
     success_url = reverse_lazy('products:category_list')
+
+    def form_valid(self, form):
+        # self.object já está definido antes de form_valid ser chamado em DeleteView
+        self.object = self.get_object()
+        brand_name = self.object.name
+        self.object.delete()
+        messages.success(self.request, f'A marca "{brand_name}" foi excluída com sucesso.')
+        return HttpResponseRedirect(self.get_success_url())

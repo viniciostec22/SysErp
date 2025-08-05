@@ -56,13 +56,13 @@
 
               <!-- Botão Excluir -->
               <a href="#"
-                class="delete-brand-btn inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
+                class="delete-category-btn inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
                         text-red-600 dark:text-red-400 
                         bg-red-100 dark:bg-red-900 
                         hover:bg-red-200 dark:hover:bg-red-800 
                         transition-all duration-200"
                         data-url="{% url 'products:category_delete' category.pk %}"
-                        data-name="{{ brand.category }}">
+                        data-name="{{ category.category }}">
                   <i class="fas fa-trash-alt mr-2"></i> Excluir
               </a>
             </td>
@@ -112,7 +112,7 @@
     popup.focus();
   }
 </script>
-<form id="delete-brand-form" method="post" style="display: none;">
+<form id="delete-category-form" method="post" style="display: none;">
   {% csrf_token %}
 </form>
 
@@ -121,8 +121,8 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const deleteButtons = document.querySelectorAll('.delete-brand-btn');
-    const deleteForm = document.getElementById('delete-brand-form');
+    const deleteButtons = document.querySelectorAll('.delete-category-btn');
+    const deleteForm = document.getElementById('delete-category-form');
 
     deleteButtons.forEach(button => {
       button.addEventListener('click', function (e) {
