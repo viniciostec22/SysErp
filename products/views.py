@@ -140,8 +140,18 @@ class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
 class CategoryUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Category
     template_name = 'products/category_form.html'
-    forms_class = forms.CategoryForm
+    form_class = forms.CategoryForm
     success_url = reverse_lazy('products:category_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
+        if self.request.GET.get('popup'):
+            return HttpResponse(
+                '<script>window.opener.location.reload(); window.close();</script>'
+            )
+        return response
 
 class CategoryDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Category
