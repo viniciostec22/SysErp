@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Nova Categoria</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-gray-50">
+  <h2 class="text-xl font-bold mb-4">Cadastrar Nova Categoria</h2>
+  <!-- brand_form.html -->
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">Salvar</button>
+</form>
+
+</body>
+</html>
+
+

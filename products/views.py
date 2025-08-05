@@ -11,20 +11,20 @@ from core.models import Company # Importamos Company para filtrar por empresa
 # Mixin para garantir que apenas dados da empresa do usuário logado sejam acessados
 class CompanyFilteredMixin:
     def get_queryset(self):
-        print(f"DEBUG: Usuário logado: {self.request.user.email}")
+        # print(f"DEBUG: Usuário logado: {self.request.user.email}")
         if self.request.user.is_authenticated and hasattr(self.request.user, 'company_links'): # CORRIGIDO: de 'companyuser_set' para 'company_links'
             # Encontra a CompanyUser ativa para o usuário logado
             # Usamos .all() para acessar o related_manager e depois filtramos
             company_user = self.request.user.company_links.filter(active=True).first()
             if company_user:
-                print(f"DEBUG: CompanyUser ativa encontrada: {company_user.user.email} -> {company_user.company.name}")
+                # print(f"DEBUG: CompanyUser ativa encontrada: {company_user.user.email} -> {company_user.company.name}")
                 queryset = super().get_queryset().filter(company=company_user.company)
-                print(f"DEBUG: Quantidade de objetos após filtro da empresa: {queryset.count()}")
+                # print(f"DEBUG: Quantidade de objetos após filtro da empresa: {queryset.count()}")
                 return queryset
-            else:
-                print("DEBUG: Nenhuma CompanyUser ativa encontrada para o usuário logado.")
-        else:
-            print("DEBUG: Usuário não autenticado ou sem company_links.") # Mensagem de depuração atualizada
+        #     else:
+        #         print("DEBUG: Nenhuma CompanyUser ativa encontrada para o usuário logado.")
+        # else:
+        #     print("DEBUG: Usuário não autenticado ou sem company_links.") # Mensagem de depuração atualizada
         return self.model.objects.none()
 
     def form_valid(self, form):
@@ -52,7 +52,7 @@ class BrandListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(name__icontains=query)
-        return qs
+        return qs.order_by('name')
 
 class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = models.Brand
@@ -123,6 +123,19 @@ class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     template_name = 'products/category_form.html'
     form_class = forms.CategoryForm
     success_url = reverse_lazy('products:category_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
+        if self.request.GET.get('popup'):
+            return HttpResponse(
+                '<script>window.opener.location.reload(); window.close();</script>'
+            )
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('products:category_list')
 
 class CategoryUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Category
