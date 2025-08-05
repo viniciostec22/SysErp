@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2>Excluir Marca</h2>
+    <p>Tem certeza que deseja excluir a marca: <strong>{{ object.name }}</strong>?</p>
+
+    <!-- Formulário de exclusão -->
+    <form method="post" id="delete-form">
+      {% csrf_token %}
+      <!-- Botão tipo BUTTON para não submeter diretamente -->
+      <button type="button" class="btn btn-danger" id="confirm-delete-btn">Excluir</button>
+      <a href="{% url 'products:brand_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+
+  <!-- Importando SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const deleteBtn = document.getElementById('confirm-delete-btn');
+      const form = document.getElementById('delete-form');
+
+      deleteBtn.addEventListener('click', function (e) {
+        // Mostra a caixa de confirmação
+        Swal.fire({
+          title: 'Tem certeza?',
+          text: "Você realmente deseja excluir esta marca?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Sim, excluir',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit(); // Só envia o formulário após confirmação
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

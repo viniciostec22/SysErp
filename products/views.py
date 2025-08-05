@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin # Para exigir login
@@ -86,10 +86,22 @@ class BrandUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('products:brand_list')
 
+
 class BrandDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Brand
     template_name = 'products/brand_confirm_delete.html'
     success_url = reverse_lazy('products:brand_list')
+
+    def form_valid(self, form):
+        # self.object já está definido antes de form_valid ser chamado em DeleteView
+        self.object = self.get_object()
+        brand_name = self.object.name
+        self.object.delete()
+        messages.success(self.request, f'A marca "{brand_name}" foi excluída com sucesso.')
+        return HttpResponseRedirect(self.get_success_url())
+
+    
+
 
 # --- Views para Categorias (Category) ---
 

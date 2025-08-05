@@ -49,8 +49,13 @@
                 onclick="window.open(this.href, 'EditarMarca', 'width=600,height=400'); return false;"
                 class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition">
                 <i class="fas fa-pencil-alt mr-2"></i>
-              </a>
-              <a href="#" class="text-red-600 hover:underline">Excluir</a>
+    <a href="#"
+   class="delete-brand-btn text-red-600 hover:underline"
+   data-url="{% url 'products:brand_delete' brand.pk %}"
+   data-name="{{ brand.name }}">
+   Excluir
+</a>
+
             </td>
           </tr>
         {% empty %}
@@ -81,4 +86,44 @@
     popup.focus();
   }
 </script>
+<form id="delete-brand-form" method="post" style="display: none;">
+  {% csrf_token %}
+</form>
+
+<!-- Importa SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-brand-btn');
+    const deleteForm = document.getElementById('delete-brand-form');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const brandName = this.dataset.name;
+        const deleteUrl = this.dataset.url;
+
+        Swal.fire({
+          title: 'Tem certeza?',
+          text: `Deseja excluir a marca "${brandName}"?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sim, excluir',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Define a action do form e envia via POST
+            deleteForm.action = deleteUrl;
+            deleteForm.submit();
+          }
+        });
+      });
+    });
+  });
+</script>
+
 {% endblock %}
