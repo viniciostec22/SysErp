@@ -47,6 +47,13 @@ class BrandListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     context_object_name = 'brands'
     paginate_by = 10 
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(name__icontains=query)
+        return qs
+
 class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = models.Brand
     template_name = 'products/brand_form.html'
