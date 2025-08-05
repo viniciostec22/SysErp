@@ -1,8 +1,9 @@
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin # Para exigir login
 from django.contrib import messages
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
 from . import models, forms
 from core.models import Company # Importamos Company para filtrar por empresa
@@ -44,13 +45,28 @@ class BrandListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     model = models.Brand
     template_name = 'products/brand_list.html'
     context_object_name = 'brands'
-    paginate_by = 10 # Opcional: paginar a lista
+    paginate_by = 10 
 
 class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = models.Brand
     template_name = 'products/brand_form.html'
     form_class = forms.BrandForm 
-    success_url = reverse_lazy('products:brand_list') # Redireciona para a lista após criar
+    #success_url = reverse_lazy('products:brand_list') # Redireciona para a lista após criar
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
+        if self.request.GET.get('popup'):
+            return HttpResponse(
+                '<script>window.opener.location.reload(); window.close();</script>'
+            )
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('products:brand_list')
+
+    
 
 class BrandUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Brand

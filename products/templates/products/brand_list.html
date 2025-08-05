@@ -5,7 +5,14 @@
 <div class="container mx-auto mt-10 max-w-4xl">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Marcas</h1>
-    <a href="{% url 'products:brand_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">Cadastrar Nova Marca</a>
+    {% comment %} <a href="{% url 'products:brand_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">Cadastrar Nova Marca</a> {% endcomment %}
+    <a href="{% url 'products:brand_create' %}?popup=1"
+      onclick="window.open(this.href, 'NovaMarca', 'width=600,height=400'); return false;"
+      class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition">
+      Nova marca
+    </a>
+
+
   </div>
 
   {% if messages %}
@@ -63,4 +70,11 @@
     </div>
   {% endif %}
 </div>
+
+<script>
+  function openPopup(url) {
+    const popup = window.open(url, 'popup', 'width=500,height=300,resizable=yes,scrollbars=yes');
+    popup.focus();
+  }
+</script>
 {% endblock %}
