@@ -15,7 +15,7 @@ class Brand(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} ({self.company.name})"
+        return self.name
 
     class Meta:
         unique_together = ('company', 'name')
@@ -35,7 +35,7 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} ({self.company.name})"
+        return self.name
     
     class Meta:
         unique_together = ('company', 'name')
@@ -64,7 +64,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} ({self.company.name})"
+        return self.name
 
     class Meta:
         verbose_name = 'Produto'

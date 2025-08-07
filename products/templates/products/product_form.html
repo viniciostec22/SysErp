@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+
+{% block extra_head %}
+  <!-- Estilos do Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+    /* Select2 estilizado para Tailwind */
+    .select2-container--default .select2-selection--single {
+      width: 100%;
+      height: 2.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      background-color: #f9fafb;
+      display: flex;
+      align-items: center;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #111827;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: #6b7280 transparent transparent transparent;
+    }
+
+    .select2-container--default .select2-selection--single:focus-within {
+      outline: none;
+      box-shadow: 0 0 0 3px #4ade80;
+    }
+
+    /* Dark mode */
+    .dark .select2-container--default .select2-selection--single {
+      background-color: #374151;
+      border-color: #4b5563;
+    }
+
+    .dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #f9fafb;
+    }
+
+    .dark .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: #ffffff transparent transparent transparent;
+    }
+
+    .dark .select2-dropdown {
+      background-color: #374151;
+      border-color: #4b5563;
+    }
+
+    .dark .select2-results__option {
+      color: #e5e7eb;
+    }
+
+    .dark .select2-results__option--highlighted {
+      background-color: #16a34a;
+      color: #ffffff;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen bg-gray-900 dark:bg-gray-900 text-gray-300 dark:text-gray-300">
+    <div class="w-full max-w-4xl p-8 bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-white dark:text-white">Cadastro de Produtos</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="space-y-6">
+                <!-- Título (ocupa 2 colunas) -->
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-sm text-red-400 mt-1">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Categoria e Marca (em 2 colunas) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.category.label }}</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.brand.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.brand.label }}</label>
+                        {{ form.brand }}
+                        {% if form.brand.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.brand.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Descrição (ocupa 2 colunas) -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.description.label }}</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-sm text-red-400 mt-1">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Código de Barras e SKU (em 2 colunas) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.barcode.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.barcode.label }}</label>
+                        {{ form.barcode }}
+                        {% if form.barcode.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.barcode.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.sku.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.sku.label }}</label>
+                        {{ form.sku }}
+                        {% if form.sku.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.sku.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Preço de Custo e Preço de Venda (em 2 colunas) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.cost.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.cost.label }}</label>
+                        {{ form.cost }}
+                        {% if form.cost.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.cost.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.price.label }}</label>
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.price.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-4 mt-8">
+                <a href="{% url 'products:product_list' %}" class="px-6 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    Salvar Produto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function() {
+            $('.select2-field').select2({
+                placeholder: 'Selecione uma opção',
+                allowClear: true
+            });
+        });
+    </script>
+{% endblock %}
+
+

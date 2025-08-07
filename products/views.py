@@ -185,6 +185,8 @@ class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+    
+    
 
 class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Product
