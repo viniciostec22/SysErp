@@ -51,9 +51,8 @@
             <td class="px-4 py-3 text-gray-900 dark:text-gray-100">R${{ product.price|floatformat:2 }}</td>
             <td class="px-4 py-3 text-right space-x-2">
               <!-- Botão Editar -->
-              <a href="{% url 'products:product_update' product.pk %}?popup=1"
-                onclick="window.open(this.href, 'EditarProduct', 'width=600,height=400'); return false;"
-                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
+              <a href="{% url 'products:product_update' product.pk %}"
+                        class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
                         text-white bg-blue-600 hover:bg-blue-700 
                         transition-all duration-200">
                   <i class="fas fa-pencil-alt mr-2"></i> Editar

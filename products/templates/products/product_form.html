@@ -1,71 +1,105 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
-{% load static %}
-
 
 {% block extra_head %}
-  <!-- Estilos do Select2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <style>
-    /* Select2 estilizado para Tailwind */
-    .select2-container--default .select2-selection--single {
-      width: 100%;
-      height: 2.5rem;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #d1d5db;
-      border-radius: 0.5rem;
-      background-color: #f9fafb;
-      display: flex;
-      align-items: center;
-    }
+    <!-- Estilos CSS personalizados para o Select2 para garantir que funcione em ambos os modos -->
+    <style>
+        /* Estilos base para o Select2 (Modo Claro) para corresponder aos outros inputs Tailwind */
+        .select2-container--default .select2-selection--single {
+            width: 100%;
+            height: 2.5rem; /* 40px para combinar com o `py-2` dos outros inputs */
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-width: 1px;
+            border-color: #d1d5db; /* gray-300 */
+            background-color: #ffffff; /* white */
+            color: #1f2937; /* gray-800 */
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #1f2937; /* gray-800 */
+            line-height: 1.5rem;
+        }
+        .select2-dropdown {
+            background-color: #ffffff; /* white */
+            border-color: #d1d5db; /* gray-300 */
+            color: #1f2937; /* gray-800 */
+            border-radius: 0.5rem;
+        }
+        .select2-search--dropdown .select2-search__field {
+            background-color: #f3f4f6; /* gray-100 */
+            border-color: #d1d5db; /* gray-300 */
+            color: #1f2937; /* gray-800 */
+        }
+        .select2-results__option {
+            color: #1f2937; /* gray-800 */
+        }
+        .select2-results__option--highlighted {
+            background-color: #3b82f6; /* blue-500 */
+            color: #ffffff;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #9ca3af transparent transparent transparent; /* gray-400 */
+            top: 50%;
+        }
 
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-      color: #111827;
-    }
+        /* Estilos para o Modo Escuro */
+        .dark .select2-container--default .select2-selection--single {
+            background-color: #1f2937; /* gray-800 */
+            border-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        .dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #d1d5db !important; /* gray-300 */
+        }
+        .dark .select2-dropdown {
+            background-color: #1f2937; /* gray-800 */
+            border-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        .dark .select2-search--dropdown .select2-search__field {
+            background-color: #374151; /* gray-700 */
+            border-color: #4b5563; /* gray-600 */
+            color: #d1d5db; /* gray-300 */
+        }
+        .dark .select2-results__option {
+            color: #d1d5db; /* gray-300 */
+        }
+        .dark .select2-results__option--highlighted {
+            background-color: #2563eb; /* blue-600 */
+            color: #ffffff;
+        }
+        .dark .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #d1d5db transparent transparent transparent; /* gray-300 */
+        }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-      border-color: #6b7280 transparent transparent transparent;
-    }
+        /* Estilos de Foco */
+        .select2-container--default .select2-selection--single:focus,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            box-shadow: 0 0 0 2px #dcfce7, 0 0 0 4px #4ade80;
+            outline: none;
+        }
 
-    .select2-container--default .select2-selection--single:focus-within {
-      outline: none;
-      box-shadow: 0 0 0 3px #4ade80;
-    }
-
-    /* Dark mode */
-    .dark .select2-container--default .select2-selection--single {
-      background-color: #374151;
-      border-color: #4b5563;
-    }
-
-    .dark .select2-container--default .select2-selection--single .select2-selection__rendered {
-      color: #f9fafb;
-    }
-
-    .dark .select2-container--default .select2-selection--single .select2-selection__arrow b {
-      border-color: #ffffff transparent transparent transparent;
-    }
-
-    .dark .select2-dropdown {
-      background-color: #374151;
-      border-color: #4b5563;
-    }
-
-    .dark .select2-results__option {
-      color: #e5e7eb;
-    }
-
-    .dark .select2-results__option--highlighted {
-      background-color: #16a34a;
-      color: #ffffff;
-    }
-  </style>
+        .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+            border-color: transparent transparent #9ca3af transparent; /* gray-400 */
+            top: 50%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-screen bg-gray-900 dark:bg-gray-900 text-gray-300 dark:text-gray-300">
-    <div class="w-full max-w-4xl p-8 bg-gray-800 dark:bg-gray-800 rounded-xl shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-white dark:text-white">Cadastro de Produtos</h2>
+<div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-300">
+    <div class="w-full max-w-4xl p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+            {% if form.instance.pk %}
+                Editar Produto {{ form.instance.name }}
+            {% else %}
+                Cadastro de Produtos
+            {% endif %}
+        </h2>
         <form method="post">
             {% csrf_token %}
             <div class="space-y-6">
@@ -169,5 +203,3 @@
         });
     </script>
 {% endblock %}
-
-
