@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-10 max-w-4xl">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Produtos</h1>
+    {% comment %} <a href="{% url 'products:brand_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">Cadastrar Nova Marca</a> {% endcomment %}
+    <a href="{% url 'products:product_create' %}?popup=1"
+      onclick="window.open(this.href, 'NovaCategoria', 'width=600,height=400'); return false;"
+      class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition">
+      Novo Produto
+    </a>
+
+
+  </div>
+
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="p-3 rounded bg-green-500 text-white">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="mb-4">
+    <form method="get" class="flex space-x-2">
+      <input type="text" name="q" placeholder="Buscar marca..." value="{{ request.GET.q }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+      <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Buscar</button>
+    </form>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 shadow rounded">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <thead class="bg-gray-100 dark:bg-gray-700">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Nome</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Marca</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Categoria</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Preço</th>
+          <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for product  in products %}
+          <tr>
+            <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ product.name }}</td>
+            <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ product.brand.name }}</td>
+            <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ product.category.name }}</td>
+            <td class="px-4 py-3 text-gray-900 dark:text-gray-100">R${{ product.price|floatformat:2 }}</td>
+            <td class="px-4 py-3 text-right space-x-2">
+              <!-- Botão Editar -->
+              <a href="{% url 'products:product_update' product.pk %}?popup=1"
+                onclick="window.open(this.href, 'EditarProduct', 'width=600,height=400'); return false;"
+                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
+                        text-white bg-blue-600 hover:bg-blue-700 
+                        transition-all duration-200">
+                  <i class="fas fa-pencil-alt mr-2"></i> Editar
+              </a>
+
+              <!-- Botão Excluir -->
+              <a href="#"
+                class="delete-category-btn inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium 
+                        text-red-600 dark:text-red-400 
+                        bg-red-100 dark:bg-red-900 
+                        hover:bg-red-200 dark:hover:bg-red-800 
+                        transition-all duration-200"
+                        data-url="{% url 'products:product_delete' product.pk %}"
+                        data-name="{{ product.category }}">
+                  <i class="fas fa-trash-alt mr-2"></i> Excluir
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="2" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">Nenhuma categoria cadastrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if is_paginated %}
+    <div class="mt-4 flex justify-center space-x-2">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+          class="px-4 py-2 rounded border transition-colors
+                  bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black
+                  dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white">
+          &laquo; Anterior
+        </a>
+      {% endif %}
+
+      <span class="px-4 py-2 rounded border font-semibold
+                  bg-gray-200 text-gray-800
+                  dark:bg-gray-700 dark:text-white">
+        {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+          class="px-4 py-2 rounded border transition-colors
+                  bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black
+                  dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white">
+          Próxima &raquo;
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+  function openPopup(url) {
+    const popup = window.open(url, 'popup', 'width=500,height=300,resizable=yes,scrollbars=yes');
+    popup.focus();
+  }
+</script>
+<form id="delete-category-form" method="post" style="display: none;">
+  {% csrf_token %}
+</form>
+
+<!-- Importa SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-category-btn');
+    const deleteForm = document.getElementById('delete-category-form');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const brandName = this.dataset.name;
+        const deleteUrl = this.dataset.url;
+
+        Swal.fire({
+          title: 'Tem certeza?',
+          text: `Deseja excluir a marca "${brandName}"?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sim, excluir',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Define a action do form e envia via POST
+            deleteForm.action = deleteUrl;
+            deleteForm.submit();
+          }
+        });
+      });
+    });
+  });
+</script>
+
+{% endblock %}
+
+{% comment %} ```html
+<!-- templates/products/product_form.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h2 class="h4 mb-4 fw-bold">{% if form.instance.pk %}Editar Produto{% else %}Criar Produto{% endif %}</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          {% for field in form %}
+            <div class="col-12 {% if field.name == 'description' %}col-md-12{% else %}col-md-6{% endif %}">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+          <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+```html
+<!-- templates/products/product_confirm_delete.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h2 class="h4 mb-4 fw-bold">Confirmar Exclusão</h2>
+      <div class="alert alert-warning" role="alert">
+        Tem certeza que deseja excluir o produto "**{{ product.name }}**"?
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-between">
+          <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} {% endcomment %}

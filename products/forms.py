@@ -40,3 +40,44 @@ class CategoryForm(forms.ModelForm):
     # O método __init__ não precisa mais manipular o campo 'company'
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = models.Product
+        fields = ['name', 'category', 'brand', 'description', 'barcode', 'cost', 'price', 'sku', 'ncm']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'brand': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'barcode': forms.TextInput(attrs={'class': 'form-control'}),
+            'sku': forms.TextInput(attrs={'class': 'form-control'}),
+            'ncm': forms.TextInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'name': 'Título',
+            'category': 'Categoria',
+            'brand': 'Marca',
+            'description': 'Descrição',
+            'barcode': 'Código de Barras',
+            'sku': 'SKU',
+            'ncm': 'NCM',
+            'cost': 'Preço de Custo',
+            'price': 'Preço de Venda',
+        }
+
+    # Adicionamos o método __init__ para filtrar as opções de Brand e Category
+    def __init__(self, *args, **kwargs):
+        # Capturamos o request da view antes de chamar o super().__init__()
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        if request and request.user.is_authenticated:
+            company_user = request.user.company_links.filter(active=True).first()
+            if company_user:
+                # Filtramos as opções de Brand e Category para mostrar apenas as da empresa do usuário
+                self.fields['category'].queryset = models.Category.objects.filter(company=company_user.company)
+                self.fields['brand'].queryset = models.Brand.objects.filter(company=company_user.company)

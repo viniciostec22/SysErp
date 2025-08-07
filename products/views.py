@@ -165,3 +165,40 @@ class CategoryDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
         self.object.delete()
         messages.success(self.request, f'A marca "{brand_name}" foi excluída com sucesso.')
         return HttpResponseRedirect(self.get_success_url())
+    
+    
+# --- Views para Produtos (Product) ---
+class ProductListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
+    model = models.Product
+    template_name = 'products/product_list.html'
+    context_object_name = 'products'
+    paginate_by = 10
+
+class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
+    model = models.Product
+    template_name = 'products/product_form.html'
+    form_class = forms.ProductForm
+    success_url = reverse_lazy('products:product_list')
+
+    # Sobrescrevemos get_form_kwargs para passar o request para o formulário
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
+    model = models.Product
+    template_name = 'products/product_form.html'
+    form_class = forms.ProductForm
+    success_url = reverse_lazy('products:product_list')
+    
+    # Sobrescrevemos get_form_kwargs para passar o request para o formulário
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+class ProductDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
+    model = models.Product
+    template_name = 'products/product_confirm_delete.html'
+    success_url = reverse_lazy('products:product_list')

@@ -15,4 +15,10 @@ urlpatterns = [
     path('categories/create/', views.CategoryCreateView.as_view(), name='category_create'),
     path('categories/<uuid:pk>/update/', views.CategoryUpdateView.as_view(), name='category_update'),
     path('categories/<uuid:pk>/delete/', views.CategoryDeleteView.as_view(), name='category_delete'),
+
+    # URLs para Produtos
+    path('', views.ProductListView.as_view(), name='product_list'), # URL para listar produtos
+    path('create/', views.ProductCreateView.as_view(), name='product_create'),
+    path('<uuid:pk>/update/', views.ProductUpdateView.as_view(), name='product_update'),
+    path('<uuid:pk>/delete/', views.ProductDeleteView.as_view(), name='product_delete'),
 ]
