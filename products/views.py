@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -176,6 +177,35 @@ class ProductListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
     paginate_by = 10
+
+    def get_queryset(self):
+        # Chama o queryset padrão
+        queryset = super().get_queryset()
+
+        # Obtém os parâmetros da URL
+        query = self.request.GET.get('q')
+        filter_by = self.request.GET.get('filter_by')
+
+        # Se a pesquisa e o filtro existirem, filtra os produtos
+        if query and filter_by:
+            # Dicionário para mapear os valores do select aos campos do modelo
+            filter_map = {
+                'name': 'name__icontains',
+                'brand': 'brand__name__icontains',
+                'category': 'category__name__icontains',
+                'sku': 'sku__icontains',
+            }
+
+            # Obtém o parâmetro de filtro, com 'name__icontains' como padrão
+            filter_param = filter_map.get(filter_by, 'name__icontains')
+
+            # Filtra o queryset usando a busca dinâmica
+            queryset = queryset.filter(
+                Q(**{filter_param: query})
+            )
+
+        # Retorna o queryset final, que pode ou não estar filtrado
+        return queryset
 
 
 class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):

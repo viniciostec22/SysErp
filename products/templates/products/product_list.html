@@ -25,10 +25,53 @@
   {% endif %}
 
   <div class="mb-4">
-    <form method="get" class="flex space-x-2">
-      <input type="text" name="q" placeholder="Buscar marca..." value="{{ request.GET.q }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-      <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Buscar</button>
-    </form>
+    <form method="get" class="flex flex-wrap items-end space-x-4 mb-8">
+      <!-- Dropdown para selecionar o campo de filtro -->
+      <div class="flex-grow min-w-[150px]">
+          <label for="filter_by" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filtrar por</label>
+          <select id="filter_by" name="filter_by" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="name" {% if request.GET.filter_by == 'name' %}selected{% endif %}>Nome</option>
+              <option value="brand" {% if request.GET.filter_by == 'brand' %}selected{% endif %}>Marca</option>
+              <option value="category" {% if request.GET.filter_by == 'category' %}selected{% endif %}>Categoria</option>
+              <option value="sku" {% if request.GET.filter_by == 'sku' %}selected{% endif %}>SKU</option>
+          </select>
+      </div>
+
+      <!-- Campo de texto para a pesquisa -->
+      <div class="flex-grow min-w-[200px]">
+          <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Termo de Pesquisa</label>
+          <input 
+              type="text" 
+              id="q" 
+              name="q" 
+              placeholder="Pesquisar..." 
+              value="{{ request.GET.q|default:'' }}" 
+              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+      </div>
+
+      <!-- Botões de submissão do formulário e limpeza -->
+      <div class="flex-shrink-0 flex items-center space-x-2">
+          <!-- Botão para limpar os filtros -->
+          <a href="{% url 'products:product_list' %}" class="bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-semibold px-6 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center justify-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v8M5 12h14a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2z" />
+              </svg>
+              <span>Limpar</span>
+          </a>
+          
+          <!-- Botão de submissão do formulário -->
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span>Buscar</span>
+          </button>
+      </div>
+  </form>
+
+
   </div>
 
   <div class="bg-white dark:bg-gray-800 shadow rounded">
