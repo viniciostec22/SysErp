@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}ERP System{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'dist/output.css' %}">
-    <!-- Certifique-se de que esta linha está correta e funcionando -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -23,7 +23,7 @@
           <button id="sidebar-toggle-mobile" class="md:hidden text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 focus:outline-none text-xl mr-3">
             <i class="fa-solid fa-bars"></i>
           </button>
-          <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">🏢 ERP System</span>
+          <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">🏢 ERP System {{ user.company_links.first.company.name }}</span>
         </div>
         {% if user.is_authenticated %}
         <div class="flex items-center space-x-4 relative">
@@ -80,6 +80,12 @@
                 <i class="fa-solid fa-house mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
         <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Início</span>
       </a>
+
+      <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
+        <i class="fa-solid fa-building mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
+        <span class="text-gray-800 dark:text-gray-100 group-[.sidebar-collapsed]:hidden">Fornecedores</span>
+      </a>
+
 
       <a href="#" class="flex items-center px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 rounded group">
         <i class="fa-solid fa-users mr-3 text-lg text-gray-700 dark:text-gray-300"></i>
