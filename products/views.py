@@ -118,6 +118,7 @@ class CategoryListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     context_object_name = 'categories'
     paginate_by = 10
 
+
 class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = models.Category
     template_name = 'products/category_form.html'
@@ -137,6 +138,7 @@ class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('products:category_list')
 
+
 class CategoryUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Category
     template_name = 'products/category_form.html'
@@ -152,6 +154,7 @@ class CategoryUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
                 '<script>window.opener.location.reload(); window.close();</script>'
             )
         return response
+
 
 class CategoryDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Category
@@ -174,6 +177,7 @@ class ProductListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     context_object_name = 'products'
     paginate_by = 10
 
+
 class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = models.Product
     template_name = 'products/product_form.html'
@@ -185,8 +189,7 @@ class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
-    
-    
+       
 
 class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Product
@@ -200,7 +203,16 @@ class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
         kwargs['request'] = self.request
         return kwargs
 
+
 class ProductDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = models.Product
     template_name = 'products/product_confirm_delete.html'
     success_url = reverse_lazy('products:product_list')
+
+    def form_valid(self, form):
+        # self.object já está definido antes de form_valid ser chamado em DeleteView
+        self.object = self.get_object()
+        brand_name = self.object.name
+        self.object.delete()
+        messages.success(self.request, f'A marca "{brand_name}" foi excluída com sucesso.')
+        return HttpResponseRedirect(self.get_success_url())
