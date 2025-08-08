@@ -1,5 +1,7 @@
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import DeleteView, ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Supplier
 from .forms import SupplierForm
@@ -13,6 +15,7 @@ class SupplierListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     template_name = 'suppliers/supplier_list.html'
     context_object_name = 'suppliers'
     paginate_by = 10
+
 
 class SupplierCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     """
@@ -52,3 +55,20 @@ class SupplierUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['is_create_view'] = False
         return context
+
+
+class SupplierDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
+    """
+    View para confirmar a exclusão de um fornecedor.
+    """
+    model = Supplier
+    template_name = 'suppliers/supplier_confirm_delete.html'
+    success_url = reverse_lazy('suppliers:supplier_list')
+
+    def form_valid(self, form):
+        # self.object já está definido antes de form_valid ser chamado em DeleteView
+        self.object = self.get_object()
+        supplier_name = self.object.name
+        self.object.delete()
+        messages.success(self.request, f'O fornecedor "{supplier_name}" foi excluída com sucesso.')
+        return HttpResponseRedirect(self.get_success_url())
