@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, ListView, CreateView, UpdateView
+from django.views.generic import DeleteView, DetailView, ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Supplier
 from .forms import SupplierForm
@@ -72,3 +72,12 @@ class SupplierDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
         self.object.delete()
         messages.success(self.request, f'O fornecedor "{supplier_name}" foi excluída com sucesso.')
         return HttpResponseRedirect(self.get_success_url())
+
+
+class SupplierDetailView(LoginRequiredMixin, CompanyFilteredMixin, DetailView):
+    """
+    View para exibir os detalhes de um único fornecedor.
+    """
+    model = Supplier
+    template_name = 'suppliers/supplier_detail.html'
+    context_object_name = 'supplier'

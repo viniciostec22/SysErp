@@ -25,6 +25,19 @@ class SupplierForm(forms.ModelForm):
             'zip_code': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'}),
             'active': forms.CheckboxInput(attrs={'class': 'rounded border-gray-300 text-blue-600 shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-blue-500'}),
         }
+        
+        labels = {
+            'name': 'Razão Social',
+            'contact_person': 'Pessoa de Contato',
+            'cnpj': 'CNPJ',
+            'phone': 'Telefone',
+            'email': 'E-mail',
+            'address': 'Endereço',
+            'city': 'Cidade',
+            'state': 'Estado',
+            'zip_code': 'CEP',
+            'active': 'Ativo'
+        }
 
     def clean_cnpj(self):
         cnpj = self.cleaned_data.get('cnpj')
