@@ -1,3 +1,4 @@
+import uuid 
 from django.db import models
 from django.core.validators import MinLengthValidator
 from core.models import Company # Assumindo que a classe Company está em users.models
@@ -7,6 +8,7 @@ class Supplier(models.Model):
     Representa um fornecedor de produtos.
     Um fornecedor é associado a uma única empresa.
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='suppliers')
     name = models.CharField(max_length=255, verbose_name="Nome do Fornecedor", help_text="O nome completo do fornecedor.")
     contact_person = models.CharField(max_length=255, verbose_name="Pessoa de Contato", blank=True, null=True, help_text="O nome da pessoa de contato na empresa do fornecedor.")

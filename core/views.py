@@ -7,6 +7,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.views import View  # Importamos a classe View
 from django.contrib.auth.mixins import LoginRequiredMixin # Importamos o mixin
 
+
+
+
+
 # A view de login e logout continua a mesma por enquanto.
 def login_view(request):
     if request.method == 'POST':

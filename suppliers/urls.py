@@ -4,6 +4,7 @@ from . import views
 app_name = 'suppliers' # Define um namespace para as URLs da app
 
 urlpatterns = [
-    # URLs para Marcas
+    path('', views.SupplierListView.as_view(), name='supplier_list'),
+    path('create/', views.SupplierCreateView.as_view(), name='supplier_create'),
  
 ]
