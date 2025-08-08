@@ -189,7 +189,11 @@ class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
-       
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = False
+        return context
 
 class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = models.Product
@@ -202,6 +206,11 @@ class ProductUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True
+        return context
 
 
 class ProductDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):

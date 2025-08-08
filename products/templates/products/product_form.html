@@ -94,12 +94,13 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-300">
     <div class="w-full max-w-4xl p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
         <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-            {% if form.instance.pk %}
+            {% if is_update %}
                 Editar Produto {{ form.instance.name }}
             {% else %}
                 Cadastro de Produtos
             {% endif %}
         </h2>
+
         <form method="post">
             {% csrf_token %}
             <div class="space-y-6">
