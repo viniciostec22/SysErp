@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, CreateView, UpdateView
@@ -16,6 +17,23 @@ class SupplierListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     context_object_name = 'suppliers'
     paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        filter_by = self.request.GET.get('filter_by', 'name')   
+        
+        if query and filter_by:
+            filter_map = {
+                'name': 'name__icontains',
+                'cnpj': 'cnpj__icontains',
+            }
+
+            filter_param = filter_map.get(filter_by, 'name__icontains')
+            queryset = queryset.filter(Q(**{filter_param: query}))
+
+        return queryset
+
+        
 
 class SupplierCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     """

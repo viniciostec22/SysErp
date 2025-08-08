@@ -28,7 +28,6 @@
                 <select id="filter_by" name="filter_by" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="name" {% if request.GET.filter_by == 'name' %}selected{% endif %}>Nome</option>
                     <option value="cnpj" {% if request.GET.filter_by == 'cnpj' %}selected{% endif %}>CNPJ</option>
-                    <option value="contact_person" {% if request.GET.filter_by == 'contact_person' %}selected{% endif %}>Contato</option>
                 </select>
             </div>
 
