@@ -1,7 +1,7 @@
 # sales/views.py
 
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import Customer
@@ -52,6 +52,11 @@ class CustomerCreateView(CreateView):
         context['is_update'] = False
         return context
 
+
+class CustomerDetailView(DetailView):
+    model = Customer
+    template_name = 'sales/customer_detail.html'
+    context_object_name = 'customer'
 
 class CustomerUpdateView(UpdateView):
     model = Customer
