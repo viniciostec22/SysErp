@@ -24,10 +24,19 @@ class SupplierCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     template_name = 'suppliers/supplier_form.html'
     success_url = reverse_lazy('suppliers:supplier_list')
 
+    def get_context_data(self, **kwargs):
+        """Adiciona uma variável de contexto para indicar que é uma view de criação."""
+        context = super().get_context_data(**kwargs)
+        context['is_create_view'] = True
+        return context
+
     def form_valid(self, form):
         # Associa o fornecedor à empresa do usuário antes de salvar
-        form.instance.company = self.request.user.company
+        company_user = self.request.user.company_links.filter(active=True).first()
+        if company_user:
+            form.instance.company = company_user.company
         return super().form_valid(form)
+
 
 class SupplierUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     """
@@ -38,7 +47,8 @@ class SupplierUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     template_name = 'suppliers/supplier_form.html'
     success_url = reverse_lazy('suppliers:supplier_list')
 
-    def get_queryset(self):
-        # Garante que o usuário só pode editar fornecedores da sua empresa
-        queryset = super().get_queryset()
-        return queryset.filter(company=self.request.user.company)
+    def get_context_data(self, **kwargs):
+        """Adiciona uma variável de contexto para indicar que NÃO é uma view de criação."""
+        context = super().get_context_data(**kwargs)
+        context['is_create_view'] = False
+        return context
