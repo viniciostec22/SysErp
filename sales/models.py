@@ -1,38 +1,9 @@
 # sales/models.py
-
 import uuid
 from django.db import models
 from core.models import Company, User
 from products.models import Product
-
-class Customer(models.Model):
-    """
-    Representa um cliente associado a uma empresa.
-    """
-    # Usamos UUIDField como chave primária
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # Relação com a empresa
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='customers')
-    name = models.CharField(max_length=255)
-    cpf_cnpj = models.CharField(max_length=18, blank=True, null=True) # CPF para pessoa física ou CNPJ para jurídica
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=100, blank=True, null=True)
-    state = models.CharField(max_length=2, blank=True, null=True)
-    zip_code = models.CharField(max_length=10, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Cliente'
-        verbose_name_plural = 'Clientes'
-        # Garante que o CPF/CNPJ seja único por empresa, se preenchido
-        unique_together = ('company', 'cpf_cnpj')
-        ordering = ['name']
+from customers.models import Customer
 
 
 class Sale(models.Model):

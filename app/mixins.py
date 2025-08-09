@@ -22,3 +22,17 @@ class CompanyFilteredMixin:
         # Se o usuário não tiver uma empresa ativa, retorna um queryset vazio
         return self.model.objects.none()
 
+
+class CompanyAssignMixin:
+    """
+    Mixin para atribuir automaticamente a empresa ativa do usuário
+    ao objeto antes de salvar no CreateView.
+    """
+    def form_valid(self, form):
+        company_user = self.request.user.company_links.filter(active=True).first()
+        if company_user:
+            form.instance.company = company_user.company
+        else:
+            messages.error(self.request, "Nenhuma empresa ativa associada a este usuário.")
+            return redirect('home')
+        return super().form_valid(form)

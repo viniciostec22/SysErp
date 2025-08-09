@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin # Para exigir login
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
-from app.mixins import CompanyFilteredMixin
+from app.mixins import CompanyFilteredMixin, CompanyAssignMixin
 
 from . import models, forms
 from core.models import Company # Importamos Company para filtrar por empresa
@@ -25,13 +25,14 @@ class BrandListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
             qs = qs.filter(name__icontains=query)
         return qs.order_by('name')
 
-class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
+class BrandCreateView(LoginRequiredMixin, CompanyFilteredMixin, CompanyAssignMixin, CreateView):
     model = models.Brand
     template_name = 'products/brand_form.html'
     form_class = forms.BrandForm 
     #success_url = reverse_lazy('products:brand_list') # Redireciona para a lista após criar
 
     def form_valid(self, form):
+        # form.instance.company = self.request.user.company
         response = super().form_valid(form)
 
         # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
@@ -90,16 +91,19 @@ class CategoryListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     paginate_by = 10
 
 
-class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
+class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CompanyAssignMixin, CreateView):
     model = models.Category
     template_name = 'products/category_form.html'
     form_class = forms.CategoryForm
     success_url = reverse_lazy('products:category_list')
 
     def form_valid(self, form):
+        # Define a empresa com base no usuário logado
+        # form.instance.company = self.request.user.company
+        
         response = super().form_valid(form)
 
-        # Detecta se o formulário foi aberto como um pop-up (ex: `?popup=1` na URL)
+        # Se for um popup, fecha e recarrega a página anterior
         if self.request.GET.get('popup'):
             return HttpResponse(
                 '<script>window.opener.location.reload(); window.close();</script>'
@@ -108,6 +112,7 @@ class CategoryCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('products:category_list')
+
 
 
 class CategoryUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
@@ -178,7 +183,7 @@ class ProductListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
         return queryset
 
 
-class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, CompanyFilteredMixin, CompanyAssignMixin, CreateView):
     model = models.Product
     template_name = 'products/product_form.html'
     form_class = forms.ProductForm

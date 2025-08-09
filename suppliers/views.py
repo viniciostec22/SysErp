@@ -6,7 +6,7 @@ from django.views.generic import DeleteView, DetailView, ListView, CreateView, U
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Supplier
 from .forms import SupplierForm
-from app.mixins import CompanyFilteredMixin # Assumindo a mixin personalizada
+from app.mixins import CompanyFilteredMixin, CompanyAssignMixin
 
 class SupplierListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     """
@@ -33,9 +33,8 @@ class SupplierListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
 
         return queryset
 
-        
 
-class SupplierCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
+class SupplierCreateView(LoginRequiredMixin, CompanyFilteredMixin, CompanyAssignMixin, CreateView):
     """
     View para criar um novo fornecedor.
     Associa o novo fornecedor à empresa do usuário logado.

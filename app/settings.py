@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'stock',
     'suppliers',
     'sales',
+    'customers'
 ]
 
 
@@ -146,7 +147,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 
-
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
 # Configurações de E-mail para Desenvolvimento (imprime e-mails no console)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

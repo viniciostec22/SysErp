@@ -39,6 +39,14 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+    @property
+    def company(self):
+        # Se tiver uma empresa ativa na sessão ou lógica para pegar a principal
+        link = self.company_links.filter(active=True).first()
+        return link.company if link else None
+
+    def __str__(self):
+        return self.email
 
 class Company(models.Model):
     name = models.CharField(max_length=255)
