@@ -3,20 +3,21 @@ from pyexpat.errors import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from app.mixins import CompanyFilteredMixin
 from .models import Customer
 from .forms import CustomerForm
 
-class CustomerListView(LoginRequiredMixin, ListView):
+class CustomerListView(LoginRequiredMixin, CompanyFilteredMixin, ListView):
     model = Customer
     template_name = 'customers/customer_list.html'
     context_object_name = 'customers'
 
-class CustomerDetailView(LoginRequiredMixin, DetailView):
+class CustomerDetailView(LoginRequiredMixin, CompanyFilteredMixin, DetailView):
     model = Customer
     template_name = 'customers/customer_detail.html'
     context_object_name = 'customer'
 
-class CustomerCreateView(LoginRequiredMixin, CreateView):
+class CustomerCreateView(LoginRequiredMixin, CompanyFilteredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
@@ -40,7 +41,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
-class CustomerUpdateView(LoginRequiredMixin, UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, CompanyFilteredMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
@@ -66,7 +67,7 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class CustomerDeleteView(LoginRequiredMixin, DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, CompanyFilteredMixin, DeleteView):
     model = Customer
     template_name = 'customers/customer_confirm_delete.html'
     success_url = reverse_lazy('customers:customer_list')

@@ -45,38 +45,38 @@ class CategoryForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = models.Product
-        fields = ['name', 'category', 'brand', 'description', 'barcode', 'cost', 'price', 'sku', 'ncm']
+        # Campos atualizados com base no novo modelo do Canvas
+        fields = ['name', 'category', 'brand', 'description', 'sku', 'sale_price']
+        
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'Digite o título do produto'}),
             'category': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white select2-field', 'placeholder': 'Selecionar categoria'}),
             'brand': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white select2-field', 'placeholder': 'Selecionar marca'}),
             'description': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'rows': 3, 'placeholder': 'Descreva o produto detalhadamente...'}),
-            'barcode': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'Ex: 1234567890123'}),
             'sku': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'Ex: PROD-001'}),
-            'cost': forms.NumberInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'R$ 0,00'}),
-            'price': forms.NumberInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'R$ 0,00'}),
+            # Renomeado 'price' para 'sale_price' para corresponder ao modelo
+            'sale_price': forms.NumberInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'R$ 0,00'}),
         }
+        
         labels = {
             'name': 'Produto',
             'category': 'Categoria',
             'brand': 'Marca',
             'description': 'Descrição',
-            'barcode': 'Código de Barras',
             'sku': 'SKU',
-            'ncm': 'NCM',
-            'cost': 'Preço de Custo',
-            'price': 'Preço de Venda',
+            # Renomeado 'price' para 'sale_price' e ajustado o texto do label
+            'sale_price': 'Preço de Venda',
         }
 
-    # Adicionamos o método __init__ para filtrar as opções de Brand e Category
+    # Seu método __init__ está perfeito e foi mantido como está.
     def __init__(self, *args, **kwargs):
-        # Capturamos o request da view antes de chamar o super().__init__()
         request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
         if request and request.user.is_authenticated:
+            # É mais seguro verificar se company_links existe antes de filtrar
             company_user = request.user.company_links.filter(active=True).first()
             if company_user:
-                # Filtramos as opções de Brand e Category para mostrar apenas as da empresa do usuário
+                # Filtra as opções de Categoria e Marca para mostrar apenas as da empresa do usuário
                 self.fields['category'].queryset = models.Category.objects.filter(company=company_user.company)
                 self.fields['brand'].queryset = models.Brand.objects.filter(company=company_user.company)

@@ -22,7 +22,7 @@ class Customer(models.Model):
         verbose_name="Tipo de Cliente"
     )
     name = models.CharField(max_length=200, verbose_name="Nome / Razão Social")
-    contact_person = models.CharField(max_length=100, blank=True, verbose_name="Pessoa de Contato")
+    #contact_person = models.CharField(max_length=100, blank=True, verbose_name="Pessoa de Contato")
     cnpj = models.CharField(max_length=18, blank=True, null=True, verbose_name="CNPJ")
     cpf = models.CharField(max_length=14, blank=True, null=True, verbose_name="CPF")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Telefone")

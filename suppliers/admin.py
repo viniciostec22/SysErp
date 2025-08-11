@@ -3,6 +3,6 @@ from .models import Supplier
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'cnpj', 'contact_person', 'email', 'company', 'active')
+    list_display = ('name', 'cnpj', 'email', 'company', 'active')
     list_filter = ('company', 'active')
-    search_fields = ('name', 'cnpj', 'contact_person')
+    search_fields = ('name', 'cnpj')

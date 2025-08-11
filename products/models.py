@@ -1,5 +1,6 @@
 import uuid  # Importamos o módulo uuid
 from django.db import models
+from django.db.models import Sum
 from core.models import Company  # Importamos o modelo Company
 
 class Brand(models.Model):
@@ -42,31 +43,44 @@ class Category(models.Model):
         verbose_name = 'Categoria'
         verbose_name_plural = 'Categorias'
 
+# --- Modelo Principal do Produto ---
 class Product(models.Model):
     """
-    Representa um produto.
-    Relacionado a Company, Brand e Category.
+    Representa um produto no sistema. A quantidade em estoque não é armazenada
+    diretamente aqui, mas calculada a partir dos movimentos de estoque.
     """
-    # Usamos UUIDField como chave primária
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='products')
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    # As ForeignKeys para Brand e Category também usarão UUIDs automaticamente
-    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    barcode = models.CharField(max_length=50, unique=True, blank=True, null=True)
-    sku = models.CharField(max_length=50, unique=True, blank=True, null=True)
-    ncm = models.CharField(max_length=8, blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='products', verbose_name="Empresa")
+    name = models.CharField(max_length=255, verbose_name="Nome do Produto")
+    sku = models.CharField(max_length=100, blank=True, null=True, verbose_name="SKU (Código)")
+    description = models.TextField(blank=True, null=True, verbose_name="Descrição")
+    
+    # Relações
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Categoria")
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Marca")
+
+    # Campos Financeiros
+    sale_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço de Venda")
+    average_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Custo Médio")
+    
+    active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    stock_quantity = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
-        verbose_name = 'Produto'
-        verbose_name_plural = 'Produtos'
+        verbose_name = "Produto"
+        verbose_name_plural = "Produtos"
+        unique_together = ('company', 'sku') # SKU deve ser único por empresa
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.sku or 'Sem SKU'})"
+
+    @property
+    def stock_quantity(self):
+        """
+        Calcula a quantidade atual em estoque somando todos os movimentos.
+        Esta é uma propriedade 'read-only'.
+        """
+        # O related_name 'movements' vem do ForeignKey no modelo StockMovement
+        total = self.movements.aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        return total if total is not None else 0

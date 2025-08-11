@@ -11,7 +11,7 @@ class Supplier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='suppliers')
     name = models.CharField(max_length=255, verbose_name="Nome do Fornecedor", help_text="O nome completo do fornecedor.")
-    contact_person = models.CharField(max_length=255, verbose_name="Pessoa de Contato", blank=True, null=True, help_text="O nome da pessoa de contato na empresa do fornecedor.")
+    #contact_person = models.CharField(max_length=255, verbose_name="Pessoa de Contato", blank=True, null=True, help_text="O nome da pessoa de contato na empresa do fornecedor.")
     cnpj = models.CharField(max_length=18, unique=True, verbose_name="CNPJ", validators=[MinLengthValidator(14)], help_text="Número de Cadastro Nacional da Pessoa Jurídica.")
     phone = models.CharField(max_length=20, verbose_name="Telefone", help_text="Número de telefone para contato.")
     email = models.EmailField(unique=True, verbose_name="Email", help_text="Endereço de email para contato.")
