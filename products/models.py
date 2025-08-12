@@ -45,6 +45,7 @@ class Category(models.Model):
 
 # --- Modelo Principal do Produto ---
 class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     """
     Representa um produto no sistema. A quantidade em estoque não é armazenada
     diretamente aqui, mas calculada a partir dos movimentos de estoque.

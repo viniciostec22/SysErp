@@ -104,26 +104,32 @@
         <form method="post">
             {% csrf_token %}
             <div class="space-y-6">
-                <!-- Título (ocupa 2 colunas) -->
+                <!-- Produto -->
                 <div>
-                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.name.label }}</label>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium mb-1">
+                        {{ form.name.label }}
+                    </label>
                     {{ form.name }}
                     {% if form.name.errors %}
                         <div class="text-sm text-red-400 mt-1">{{ form.name.errors.0 }}</div>
                     {% endif %}
                 </div>
                 
-                <!-- Categoria e Marca (em 2 colunas) -->
+                <!-- Categoria e Marca -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.category.label }}</label>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium mb-1">
+                            {{ form.category.label }}
+                        </label>
                         {{ form.category }}
                         {% if form.category.errors %}
                             <div class="text-sm text-red-400 mt-1">{{ form.category.errors.0 }}</div>
                         {% endif %}
                     </div>
                     <div>
-                        <label for="{{ form.brand.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.brand.label }}</label>
+                        <label for="{{ form.brand.id_for_label }}" class="block text-sm font-medium mb-1">
+                            {{ form.brand.label }}
+                        </label>
                         {{ form.brand }}
                         {% if form.brand.errors %}
                             <div class="text-sm text-red-400 mt-1">{{ form.brand.errors.0 }}</div>
@@ -131,65 +137,54 @@
                     </div>
                 </div>
 
-                <!-- Descrição (ocupa 2 colunas) -->
+                <!-- Descrição -->
                 <div>
-                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.description.label }}</label>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium mb-1">
+                        {{ form.description.label }}
+                    </label>
                     {{ form.description }}
                     {% if form.description.errors %}
                         <div class="text-sm text-red-400 mt-1">{{ form.description.errors.0 }}</div>
                     {% endif %}
                 </div>
 
-                <!-- Código de Barras e SKU (em 2 colunas) -->
+                <!-- SKU e Preço de Venda -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="{{ form.barcode.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.barcode.label }}</label>
-                        {{ form.barcode }}
-                        {% if form.barcode.errors %}
-                            <div class="text-sm text-red-400 mt-1">{{ form.barcode.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.sku.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.sku.label }}</label>
+                        <label for="{{ form.sku.id_for_label }}" class="block text-sm font-medium mb-1">
+                            {{ form.sku.label }}
+                        </label>
                         {{ form.sku }}
                         {% if form.sku.errors %}
                             <div class="text-sm text-red-400 mt-1">{{ form.sku.errors.0 }}</div>
                         {% endif %}
                     </div>
-                </div>
-
-                <!-- Preço de Custo e Preço de Venda (em 2 colunas) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="{{ form.cost.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.cost.label }}</label>
-                        {{ form.cost }}
-                        {% if form.cost.errors %}
-                            <div class="text-sm text-red-400 mt-1">{{ form.cost.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.price.label }}</label>
-                        {{ form.price }}
-                        {% if form.price.errors %}
-                            <div class="text-sm text-red-400 mt-1">{{ form.price.errors.0 }}</div>
+                        <label for="{{ form.sale_price.id_for_label }}" class="block text-sm font-medium mb-1">
+                            {{ form.sale_price.label }}
+                        </label>
+                        {{ form.sale_price }}
+                        {% if form.sale_price.errors %}
+                            <div class="text-sm text-red-400 mt-1">{{ form.sale_price.errors.0 }}</div>
                         {% endif %}
                     </div>
                 </div>
             </div>
             
+            <!-- Botões -->
             <div class="flex justify-end gap-4 mt-8">
-                <a href="{% url 'products:product_list' %}" class="px-6 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <a href="{% url 'products:product_list' %}"
+                class="px-6 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500">
                     Cancelar
                 </a>
-                <button type="submit" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-                    </svg>
+                <button type="submit"
+                        class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2">
+                    <i class="fas fa-save"></i>
                     Salvar Produto
                 </button>
             </div>
         </form>
+
     </div>
 </div>
 {% endblock %}

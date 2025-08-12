@@ -1,5 +1,6 @@
 # stock/models.py
 
+import uuid
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -9,6 +10,7 @@ from customers.models import Customer
 from core.models import Company
 
 class StockMovement(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     """
     Registra toda e qualquer movimentação de estoque, seja entrada, saída ou ajuste.
     É o coração do controle de estoque e a base para o histórico.

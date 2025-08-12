@@ -34,18 +34,8 @@
                             <div class="text-sm text-red-400 mt-1">{{ form.name.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    <div>
-                        <label for="{{ form.contact_person.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.contact_person.label }}</label>
-                        {{ form.contact_person }}
-                        {% if form.contact_person.errors %}
-                            <div class="text-sm text-red-400 mt-1">{{ form.contact_person.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- CNPJ e CPF (um de cada vez) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div id="cnpj-field">
+                    <!-- CNPJ e CPF (um de cada vez) -->
+                    <div><div id="cnpj-field">
                         <label for="{{ form.cnpj.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.cnpj.label }}</label>
                         {{ form.cnpj }}
                         {% if form.cnpj.errors %}
@@ -59,7 +49,11 @@
                             <div class="text-sm text-red-400 mt-1">{{ form.cpf.errors.0 }}</div>
                         {% endif %}
                     </div>
+                    </div>
                 </div>
+
+                
+                
 
                 <!-- Telefone e Email -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

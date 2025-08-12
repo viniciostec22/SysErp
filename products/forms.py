@@ -64,7 +64,6 @@ class ProductForm(forms.ModelForm):
             'brand': 'Marca',
             'description': 'Descrição',
             'sku': 'SKU',
-            # Renomeado 'price' para 'sale_price' e ajustado o texto do label
             'sale_price': 'Preço de Venda',
         }
 
