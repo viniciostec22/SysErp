@@ -10,6 +10,8 @@ urlpatterns = [
     # path('<uuid:pk>/update/', views.purchase_update, name='purchase_update'),
     # path('<uuid:pk>/delete/', views.purchase_delete, name='purchase_delete'),
  
-    
+    # NOVAS APIs para o Select2
+    path('api/buscar_fornecedores/', views.buscar_fornecedores, name='buscar_fornecedores'),
+    path('api/buscar_produtos/', views.buscar_produtos, name='buscar_produtos'),
 ]
 
