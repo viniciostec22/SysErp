@@ -53,20 +53,31 @@ InvoiceItemFormSet = inlineformset_factory(
     PurchaseInvoiceItem,
     form=PurchaseInvoiceItemForm,
     fields=('product', 'quantity', 'unit_cost'),
-    extra=0, # Mudança para iniciar com 0 formulários
+    extra=0, 
     can_delete=True,
 )
 
+# AQUI: Novo formulário personalizado para o PayableAccountFormSet
+class PayableAccountForm(forms.ModelForm):
+    """
+    Formulário para as parcelas, garantindo classes CSS para o JavaScript.
+    """
+    class Meta:
+        model = PayableAccount
+        fields=('due_date', 'amount')
+        widgets={
+            'due_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'}),
+            'amount': forms.NumberInput(
+                attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white payable-amount-item', 'placeholder': 'Valor da Parcela', 'step': '0.01'}),
+        }
+
+# --- Formset para as PARCELAS (Contas a Pagar) ---
 PayableAccountFormSet = inlineformset_factory(
-    PurchaseInvoice,
-    PayableAccount,
+    PurchaseInvoice, 
+    PayableAccount, 
+    form=PayableAccountForm, # Usa o novo formulário personalizado
     fields=('due_date', 'amount'),
-    extra=1,
+    extra=1, 
     can_delete=True,
-    widgets={
-        'due_date': forms.DateInput(
-            attrs={'type': 'date', 'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'}
-        ),
-        'amount': forms.NumberInput(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white', 'placeholder': 'Valor da Parcela'}),
-    }
 )

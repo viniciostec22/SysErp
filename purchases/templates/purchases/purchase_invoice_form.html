@@ -6,11 +6,12 @@
     Também inclua o CSS do tema Bootstrap 5, que é uma boa base.
 {% endcomment %}
 {% block extra_head %}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.10.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.10.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
     {% comment %} 
         CSS personalizado para garantir que o Select2 se adapte ao modo escuro do Tailwind.
         Isso corrige a inconsistência que você viu na imagem.
@@ -85,9 +86,22 @@
                     <label for="id_email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email</label>
                     <input type="text" id="id_email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" readonly>
                 </div>
+                
+                {% comment %} AQUI: Novo campo Data de Cadastro {% endcomment %}
+                <div>
+                    <label for="id_registration_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Data de Cadastro</label>
+                    <input type="date" id="id_registration_date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" value="{% now "Y-m-d" %}" readonly>
+                </div>
 
-                {{ form.invoice_number }}
-                {{ form.issue_date }}
+                {% comment %} AQUI: Renderiza os campos de Número da Nota e Data de Emissão com labels {% endcomment %}
+                <div>
+                    {{ form.invoice_number.label_tag }}
+                    {{ form.invoice_number }}
+                </div>
+                <div>
+                    {{ form.issue_date.label_tag }}
+                    {{ form.issue_date }}
+                </div>
             </div>
         </div>
 
@@ -103,10 +117,11 @@
             </div>
             
             <!-- Cabeçalho da Tabela de Itens -->
-            <div class="flex gap-4 mb-2 text-sm font-bold text-gray-600 dark:text-gray-400 px-2">
-                <div class="flex-auto w-5/12">Produto</div>
-                <div class="flex-auto w-3/12">Quantidade</div>
+            <div class="flex gap-4 mb-2 text-sm font-bold text-gray-600 dark:text-gray-400 px-2 items-center">
+                <div class="flex-auto w-4/12">Produto</div>
+                <div class="flex-auto w-2/12">Quantidade</div>
                 <div class="flex-auto w-3/12">Custo Unitário</div>
+                <div class="flex-auto w-3/12">Valor Total</div>
                 <div class="flex-none w-12 text-center">Ação</div>
             </div>
 
@@ -119,38 +134,80 @@
             </div>
         </div>
 
-        <!-- Seção das Parcelas -->
+        <!-- Resumo da Nota e Campos de Ajuste -->
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Condições de Pagamento (Parcelas)</h2>
-                <button type="button" id="add-payable-form" class="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center justify-center shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                </button>
-            </div>
-
-            {{ payable_formset.management_form }}
-            <div id="payable-form-list" class="space-y-2">
-                {% for form in payable_formset %}
-                <div class="payable-form grid grid-cols-12 gap-3 mb-4 items-end">
-                    <div class="col-span-5">{{ form.due_date.label_tag }} {{ form.due_date }}</div>
-                    <div class="col-span-5">{{ form.amount.label_tag }} {{ form.amount }}</div>
-                    <div class="col-span-2 flex items-center">
-                         <button type="button" class="remove-payable-form p-2 text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-gray-700 rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
+            <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">Resumo da Nota</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Subtotal dos Produtos</label>
+                    <div class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-bold">
+                        R$ <span id="invoice-subtotal">0,00</span>
                     </div>
-                    {% if form.errors %}
-                        <div class="col-span-12 text-red-500">{{ form.errors }}</div>
-                    {% endif %}
                 </div>
-                {% endfor %}
+                <div>
+                    <label for="id_discount" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Desconto (R$)</label>
+                    <input type="text" id="id_discount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white money-mask" value="0,00">
+                </div>
+                <div>
+                    <label for="id_freight" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Frete (R$)</label>
+                    <input type="text" id="id_freight" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white money-mask" value="0,00">
+                </div>
+                <div>
+                    <label for="id_other_costs" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Outros Custos (R$)</label>
+                    <input type="text" id="id_other_costs" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white money-mask" value="0,00">
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-6 p-4 bg-green-500 text-white rounded-lg">
+                <span class="text-xl font-bold">Total Final da Nota</span>
+                <span id="invoice-total" class="text-2xl font-extrabold">R$ 0,00</span>
             </div>
         </div>
 
+        <!-- Seção das Parcelas -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">Condições de Pagamento (Parcelas)</h2>
+
+            {% comment %} AQUI: Opção de pagamento à vista ou a prazo {% endcomment %}
+            <div class="mb-4">
+                <label class="inline-flex items-center">
+                    <input type="radio" name="payment_type" id="payment-cash" value="cash" class="form-radio h-5 w-5 text-green-600" checked>
+                    <span class="ml-2 text-gray-700 dark:text-gray-200">À Vista</span>
+                </label>
+                <label class="inline-flex items-center ml-6">
+                    <input type="radio" name="payment_type" id="payment-installments" value="installments" class="form-radio h-5 w-5 text-green-600">
+                    <span class="ml-2 text-gray-700 dark:text-gray-200">A Prazo</span>
+                </label>
+            </div>
+
+            {% comment %} AQUI: Seção de parcelamento, inicialmente escondida {% endcomment %}
+            <div id="installments-section" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="id_num_parcelas" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Quantidade de Parcelas</label>
+                        <input type="number" id="id_num_parcelas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" value="1" min="1">
+                    </div>
+                    <div>
+                        <label for="id_first_due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Data da Primeira Parcela</label>
+                        <input type="date" id="id_first_due_date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="text-right mb-4">
+                    <button type="button" id="calculate-installments-btn" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 text-sm">Calcular Parcelas</button>
+                </div>
+
+                <div id="parcelas-summary" class="hidden text-sm text-green-600 dark:text-green-400 mb-4">
+                    <span id="parcela-value-display" class="font-bold"></span> por parcela.
+                </div>
+                
+                {{ payable_formset.management_form }}
+                <div id="payable-form-list" class="space-y-2">
+                    {% comment %} O formulário de parcelas será preenchido via JS {% endcomment %}
+                </div>
+            </div>
+        </div>
+        
         <!-- Botão de Envio -->
         <div class="mt-8 text-right">
             <button type="submit" class="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 text-lg">Salvar Nota de Compra</button>
@@ -159,10 +216,23 @@
 
     <!-- Templates para os novos formulários (escondidos) -->
     <div id="empty-item-form" class="hidden">
-        <div class="item-form flex gap-4 items-start">
-            <div class="flex-auto w-5/12">{{ item_formset.empty_form.product }}</div>
-            <div class="flex-auto w-3/12">{{ item_formset.empty_form.quantity }}</div>
-            <div class="flex-auto w-3/12">{{ item_formset.empty_form.unit_cost }}</div>
+        <div class="item-form flex gap-4 items-center">
+            <div class="flex-auto w-4/12">
+                <label for="{{ item_formset.empty_form.product.id_for_label }}" class="sr-only">Produto</label>
+                {{ item_formset.empty_form.product }}
+            </div>
+            <div class="flex-auto w-2/12">
+                <label for="{{ item_formset.empty_form.quantity.id_for_label }}" class="sr-only">Quantidade</label>
+                <input type="text" class="quantity-item w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Quantidade">
+            </div>
+            <div class="flex-auto w-3/12">
+                <label for="{{ item_formset.empty_form.unit_cost.id_for_label }}" class="sr-only">Custo Unitário</label>
+                <input type="text" class="unit-cost-item w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white money-mask" placeholder="Custo Unitário">
+            </div>
+            <div class="flex-auto w-3/12">
+                <label class="sr-only">Valor Total</label>
+                <input type="text" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-bold item-total">
+            </div>
             <div class="flex-none w-12 flex items-center justify-center pt-2">
                 <button type="button" class="remove-item-form p-2 text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-gray-700 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -174,8 +244,12 @@
     </div>
     <div id="empty-payable-form" class="hidden">
         <div class="payable-form grid grid-cols-12 gap-3 mb-4 items-end">
-            <div class="col-span-5">{{ payable_formset.empty_form.due_date }}</div>
-            <div class="col-span-5">{{ payable_formset.empty_form.amount }}</div>
+            <div class="col-span-5">
+                <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+            <div class="col-span-5">
+                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white payable-amount-item money-mask">
+            </div>
             <div class="col-span-2 flex items-center">
                 <button type="button" class="remove-payable-form p-2 text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-gray-700 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -188,9 +262,7 @@
 </div>
 
 <script>
-// A nova lógica JavaScript para inicializar o Select2
 document.addEventListener('DOMContentLoaded', function() {
-    // Adiciona a classe 'dark' ao corpo do Select2 se a classe dark estiver no HTML
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === "class") {
@@ -208,13 +280,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Observa o elemento <html> para mudanças na classe
     observer.observe(document.documentElement, { attributes: true });
 
-    // Função para inicializar o Select2 em um elemento específico
     function initializeSelect2(element, isProduct) {
         if (!element) return;
-
+        
         let options = {
             placeholder: "Busque aqui...",
             allowClear: true,
@@ -222,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         if (isProduct) {
-             options.ajax = {
+            options.ajax = {
                 url: '{% url "purchases:buscar_produtos" %}',
                 dataType: 'json',
                 delay: 250,
@@ -236,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             options.placeholder = "Busque por produto (nome ou código)...";
         } else {
-             options.ajax = {
+            options.ajax = {
                 url: '{% url "purchases:buscar_fornecedores" %}',
                 dataType: 'json',
                 delay: 250,
@@ -248,27 +318,111 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 cache: true,
             };
-             options.placeholder = "Busque por fornecedor...";
+            options.placeholder = "Busque por fornecedor...";
         }
         
         $(element).select2(options);
     }
-    
-    // Inicializa o Select2 para o campo de fornecedor
+
     const supplierSelect = document.querySelector('#id_supplier');
     if (supplierSelect) {
         initializeSelect2(supplierSelect, false);
-
-        // AQUI: O novo evento para detectar a seleção do fornecedor
         $(supplierSelect).on('select2:select', function (e) {
             const data = e.params.data;
             if (data) {
-                // Preenche os outros campos do formulário
-                // Certifique-se de que esses IDs existem no seu formulário principal.
                 $('#id_cnpj').val(data.cnpj);
                 $('#id_email').val(data.email);
             }
         });
+    }
+
+    function parseValue(value) {
+        if (typeof value === 'string') {
+            value = value.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+        }
+        return parseFloat(value) || 0;
+    }
+
+    function formatValue(value) {
+        return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateItemTotals() {
+        let subtotal = 0;
+        document.querySelectorAll('.item-form').forEach(form => {
+            const quantityInput = form.querySelector('.quantity-item');
+            const unitCostInput = form.querySelector('.unit-cost-item');
+            const itemTotalInput = form.querySelector('.item-total');
+
+            const quantity = parseValue(quantityInput.value);
+            const unitCost = parseValue(unitCostInput.value);
+            const itemTotal = quantity * unitCost;
+
+            itemTotalInput.value = formatValue(itemTotal);
+            subtotal += itemTotal;
+        });
+
+        $('#invoice-subtotal').text(formatValue(subtotal));
+        calculateInvoiceTotal();
+    }
+
+    function calculateInvoiceTotal() {
+        const subtotal = parseValue($('#invoice-subtotal').text());
+        const discount = parseValue($('#id_discount').val());
+        const freight = parseValue($('#id_freight').val());
+        const otherCosts = parseValue($('#id_other_costs').val());
+
+        const totalFinal = (subtotal + freight + otherCosts) - discount;
+        $('#invoice-total').text(formatValue(totalFinal));
+    }
+
+    function generateInstallments() {
+        const totalFinal = parseValue($('#invoice-total').text());
+        const numParcelas = parseInt($('#id_num_parcelas').val()) || 1;
+        const firstDueDateStr = $('#id_first_due_date').val();
+        
+        const payableList = $('#payable-form-list');
+        const emptyFormTemplate = $('#empty-payable-form');
+        const totalFormsInput = $('#id_payables-TOTAL_FORMS');
+
+        if (!firstDueDateStr || numParcelas <= 0) {
+            payableList.html('');
+            totalFormsInput.val(0);
+            $('#parcelas-summary').addClass('hidden');
+            return;
+        }
+
+        const valuePerInstallment = totalFinal / numParcelas;
+        
+        payableList.html('');
+        
+        let currentDate = new Date(firstDueDateStr + 'T00:00:00');
+        
+        for (let i = 0; i < numParcelas; i++) {
+            const formNum = i; 
+            
+            let newFormHtml = emptyFormTemplate.html().replace(/__prefix__/g, formNum);
+            const tempDiv = $('<div>').html(newFormHtml);
+            const newForm = tempDiv.find('.payable-form');
+
+            const dueDate = new Date(currentDate);
+            dueDate.setMonth(currentDate.getMonth() + i);
+
+            const dueDateValue = dueDate.toISOString().split('T')[0];
+            const amountValue = valuePerInstallment.toFixed(2).replace('.', ',');
+
+            newForm.find('input[type="date"]').val(dueDateValue);
+            newForm.find('.payable-amount-item').val(amountValue);
+            
+            payableList.append(newForm);
+        }
+
+        totalFormsInput.val(numParcelas);
+        $('#parcela-value-display').text(`R$ ${formatValue(valuePerInstallment)}`);
+        $('#parcelas-summary').removeClass('hidden');
+
+        payableList.find('.money-mask').mask('000.000.000.000.000,00', {reverse: true});
+        payableList.find('.payable-amount-item').on('input', calculateInvoiceTotal);
     }
 
     function addForm(btnSelector, listSelector, emptyFormSelector, prefix) {
@@ -293,8 +447,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (newSelect) {
                 initializeSelect2(newSelect, true);
             }
+
+            const newQuantityInput = newForm.querySelector('.quantity-item');
+            const newCostInput = newForm.querySelector('.unit-cost-item');
+            if (newQuantityInput) {
+                newQuantityInput.addEventListener('input', calculateItemTotals);
+            }
+            if (newCostInput) {
+                newCostInput.addEventListener('input', calculateItemTotals);
+            }
             
             totalFormsInput.value = formNum + 1;
+            calculateItemTotals();
         });
     }
 
@@ -311,15 +475,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     $(selectElement).select2('destroy');
                 }
                 formElement.remove();
+                
+                if (formElement.classList.contains('item-form')) {
+                    calculateItemTotals();
+                } else if (formElement.classList.contains('payable-form')) {
+                    calculateInvoiceTotal();
+                }
             }
         });
     }
 
     addForm('#add-item-form', '#item-form-list', '#empty-item-form', 'items');
-    addForm('#add-payable-form', '#payable-form-list', '#empty-payable-form', 'payables');
-    
     setupRemoveListeners('#item-form-list', '.remove-item-form');
     setupRemoveListeners('#payable-form-list', '.remove-payable-form');
+
+    document.querySelector('#id_discount').addEventListener('input', calculateInvoiceTotal);
+    document.querySelector('#id_freight').addEventListener('input', calculateInvoiceTotal);
+    document.querySelector('#id_other_costs').addEventListener('input', calculateInvoiceTotal);
+    
+    document.querySelector('#calculate-installments-btn').addEventListener('click', generateInstallments);
+
+    const paymentTypeRadios = document.querySelectorAll('input[name="payment_type"]');
+    const installmentsSection = document.getElementById('installments-section');
+    paymentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'installments' && this.checked) {
+                installmentsSection.classList.remove('hidden');
+                generateInstallments();
+            } else {
+                installmentsSection.classList.add('hidden');
+                document.getElementById('payable-form-list').innerHTML = '';
+                document.getElementById('id_payables-TOTAL_FORMS').value = 0;
+            }
+        });
+    });
+
+    $('.money-mask').mask('000.000.000.000.000,00', {reverse: true});
+    
+    calculateItemTotals();
 });
 </script>
 {% endblock  %}
